@@ -1,0 +1,49 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create listing</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" class="form-control" id="title" name="title"><br><br>          
+        <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea id="description"  class="form-control" name="description"></textarea><br><br>
+         </div>
+
+         <div class="input-group mb-3">
+            <span class="input-group-text">Price</span>
+            <input type="number" name="price" class="form-control" >
+            <span class="input-group-text">.00</span>
+          </div>
+
+    
+
+         <label class="form-label">Image: </label>
+
+    
+
+            <input type="radio" id="upload_image" name="image_option" value="upload">
+            <label class="form-label" for="upload_image">Upload Image</label>
+            <input type="file"  name="image"><br><br>
+
+            <input type="radio" id="enter_url" name="image_option" value="url">
+            <label  class="form-label" for="enter_url">Enter Image URL</label>
+            <input type="url" id="image_url" name="image_url"><br><br>
+            <label class="form-label" for="category">Category:</label>
+
+            <div class="form-floating">
+                
+                
+
+            <select id="category" name="category" class="form-select">
+                <option selected>Choose from the select menu</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select><br><br>
+         </div>
+        <input class="btn btn-primary" type="submit" value="Create Listing">
+    </form>
+{% endblock %}

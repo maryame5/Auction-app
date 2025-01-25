@@ -1,0 +1,108 @@
+
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listings</h2>
+
+                   {% if listing  not in listing_in_watch%}
+                    <form action="{% url 'add_watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                        <button type="submit" class="btn btn-outline-warning">Add to Watchlist</button>
+       
+                    </form>
+                    {% endif %}
+
+                    {% if listing in listing_in_watch%}
+                    <form action="{% url 'remove_watchlist' %}" method="post">
+                       {% csrf_token %}
+                       <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                       <button type="submit" class="btn btn-outline-danger">remove from watchlist</button>
+                       </form>
+                   {% endif %}
+    <ul>
+    <br><br>
+        <div class="card mb-3" style="width: 800px; height: 400px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{image}}" class="img-fluid rounded-start" style=" width: 300px; height: 400px;" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">Title:<b> {{listing.title}}</b></h5>
+                  <p class="card-text">description: {{listing.description}}</p>
+                  <p class="card-text">Price: {{listing.bid}}</p>
+                  <p class="card-text">Category: {{listing.category}}</p>
+                  <br><br><br><br><br><br>
+                  <p>
+                    {% if not listing.is_close %}
+                    <form action="{% url 'close_auction' %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                          <button type="submit" class="btn btn-outline-success" onclick="return confirm('Are you sure you want to close this listing?')">close listing</button>
+                      </form>
+                      
+            {% else %}
+              <p>This listing is closed.</p>
+            {% endif %}
+            
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+              
+                  
+                  
+             </ul>
+       {% if user.is_authenticated %}
+            {% if not listing.is_close %}
+            <div class="input-group mb-3"></div>
+             <form action="{% url 'add_bid' %}" method="post">
+             {% csrf_token %}
+             <div class="input-group mb-3">
+                <span class="input-group-text">Bid</span>
+                <input type="number" name="price" value="price" class="form-control" >
+                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                
+                <br>
+                <button  class="btn btn-outline-secondary" type="submit">add bid</button>
+             </form>
+              </div>
+             
+                
+                    
+                <div class="form-floating">
+                <form action="{% url 'comment' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" placeholder="Leave a comment here" name="comment" >
+                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    <br>
+                    <button  class="btn btn-outline-secondary" type="submit">add comment</button>
+                </form> 
+                </div>
+                <br>
+                <br>
+                
+                        
+              {% else %}
+                <p>This listing is closed.</p>
+              {% endif %}
+              
+        {% endif %}
+            
+        
+            
+            
+               
+    <ul>
+     {%for comment in list_com%}
+         <li>comment from <b>{{comment.user}}</b>: {{comment.comment}} </li>
+     {%endfor%}
+    </ul>
+    {% if request.GET.message %}
+       <p>{{ request.GET.message }}</p>
+    {% endif %} 
+    <p><b>{{message_win}}</b></p>
+{% endblock %}
